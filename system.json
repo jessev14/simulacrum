@@ -25,5 +25,8 @@
             "flags": {}
         }
     ],
-    "socket": "true"
+    "socket": "true",
+    "url": "",
+    "manifest": "",
+    "download": ""
 }
