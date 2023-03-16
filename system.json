@@ -1,0 +1,29 @@
+{
+    "id": "simulacrum",
+    "title": "Simulacrum",
+    "description": "Simulacrum",
+    "version": "1.0.0",
+    "compatibility": {
+        "minimum": "10",
+        "verified": "10",
+        "maximum": "10"
+    },
+    "authors": [],
+    "scripts": [],
+    "esmodules": [
+        "scripts/simulacrum.js"
+    ],
+    "styles": [
+        "styles/simulacrum.css"
+    ],
+    "packs": [],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "languages/en.json",
+            "flags": {}
+        }
+    ],
+    "socket": "true"
+}

@@ -1,0 +1,8 @@
+{
+    "ACTOR.TypeNode": "Node",
+    "ACTOR.TypePlayer": "Player",
+
+    "ITEM.TypeAction": "Action",
+    "ITEM.TypeSkill": "Skill",
+    "ITEM.TypeTool": "Tool"
+}

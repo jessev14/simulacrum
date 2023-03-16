@@ -1,0 +1,74 @@
+/* ----------------------------------------- */
+/*  Actor Sheet
+/* ----------------------------------------- */
+
+
+.actor-sheet label.visible-label {
+    display: flex;
+    align-items: center;
+}
+
+.actor-sheet ol li.actor-item {
+    list-style-type: none;
+
+    border: 1px solid black;
+    margin: 2px 0px;
+    padding: 4px 8px;
+}
+
+.actor-sheet ol li.actor-item div.item-name {
+    display: flex;
+    align-items: center;
+}
+
+.actor-sheet ol li.actor-item div.item-name img {
+    margin-right: 4px;
+}
+
+.actor-sheet ol li.actor-item div.item-name h4 {
+    margin: 0;
+}
+
+
+.actor-sheet ol li.actor-item div.item-controls {
+    flex: 0 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+
+.actor-sheet div.node-data {
+}
+
+label.select-label {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ----------------------------------------- */
+/*  Item Sheet
+/* ----------------------------------------- */
+
+.item-sheet {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-sheet div.editor {
+    flex: 1;
+}
+
+
+
+/* ----------------------------------------- */
+/*  Chat Cards
+/* ----------------------------------------- */
+
+
+.simulacrum.chat-card img {
+    flex: 0 0 36px;
+    margin-right: 5px;
+}

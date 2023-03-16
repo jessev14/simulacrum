@@ -1,0 +1,62 @@
+{
+    "Actor": {
+        "types": [
+            "player",
+            "node"
+        ],
+        "templates": {
+        },
+        "player": {
+            "templates": [
+            ],
+            "role": "",
+            "team": "blue",
+            "visible": true
+        },
+        "node": {
+            "templates": [
+            ],
+            "type": "",
+            "ipAddress": "",
+            "segment": "",
+            "attributes": {
+                "resilience": 0,
+                "insight": 0,
+                "control": 0
+            },
+            "visible": true
+        }
+    },
+    "Item": {
+        "types": [
+            "skill",
+            "tool",
+            "action"
+        ],
+        "templates": {
+            "common": {
+                "category": "",
+                "description": ""
+            }
+        },
+        "htmlFields": ["description"],
+        "skill": {
+            "templates": [
+                "common"
+            ]
+        },
+        "tool": {
+            "templates": [
+                "common"
+            ],
+            "effect": ""
+        },
+        "action": {
+            "templates": [
+                "common"
+            ],
+            "baseDice": 1,
+            "targetStat": "resilience"
+        }
+    }
+}

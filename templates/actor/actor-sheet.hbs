@@ -1,0 +1,111 @@
+<form class="actor-sheet" autocomplete="off">
+    <header class="sheet-header">
+        <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="64" width="64" />
+        <h1 class="charname"><input name="name" type="text" value="{{actor.name}}"
+                placeholder="{{ localize 'Name' }}" /></h1>
+    </header>
+
+    <div>
+        <label class="visible-label">
+            Visible
+            <input type="checkbox" name="system.visible" {{checked actor.system.visible}} />
+        </label>
+    </div>
+
+    {{#if (eq actor.type 'player')}}
+    <div class="flexrow">
+
+        <label class="select-label">
+            Team
+            <select name="system.team">
+                {{#select actor.system.team}}
+                <option value="blue">Blue</option>
+                <option value="red">Red</option>
+                {{/select}}
+            </select>
+        </label>
+
+        <label>
+            Role
+            <input name="system.role" type="text" value="{{actor.system.role}}" placeholder="Role" />
+        </label>
+        
+    </div>
+    {{else}}
+    <div class="node-data flexrow">
+
+        <label class="select-label">
+            Type
+            <select name="system.type">
+                {{selectOptions CONFIG.nodeTypes selected=actor.system.type blank=''}}
+            </select>
+        </label>
+
+        <label>
+            IP Address
+            <input name="system.ipAddress" type="text" value="{{actor.system.ipAddress}}" placeholder="IP Address" />
+        </label>
+
+        <label>
+            Segment
+            <input name="system.segment" type="text" value="{{actor.system.segment}}" placeholder="Segment" />
+        </label>
+
+    </div>
+    {{/if}}
+
+    {{#if (eq actor.type 'node')}}
+    <section class="attributes flexrow">
+
+        <label>
+            Resilience
+            <input name="system.attributes.resilience" type="number" value="{{actor.system.attributes.resilience}}"
+                placeholder="0" />
+        </label>
+
+        <label>
+            Insight
+            <input name="system.attributes.insight" type="number" value="{{actor.system.attributes.insight}}"
+                placeholder="0" />
+        </label>
+
+        <label>
+            Sensitivity
+            <input type="number" value="{{actor.system.attributes.sensitivity}}" placeholder="0" disabled />
+        </label>
+
+        <label>
+            Control
+            <input name="system.attributes.control" type="number" value="{{actor.system.attributes.control}}"
+                placeholder="0" />
+        </label>
+
+    </section>
+    {{/if}}
+
+
+
+
+    <section class="items">
+        <h2 class="noborder">Capabilities</h2>
+
+        {{#each items as |itemType id|}}
+        <h3 class="noborder">{{id}}</h3>
+        <ol class="actor-items">
+            {{#each itemType as |item id|}}
+            <li class="actor-item flexrow" data-item-id="{{item.id}}">
+                <div class="item-name">
+                    <a class="item-roll"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24" /></a>
+                    <h4>{{item.name}}</h4>
+                </div>
+                <div class="item-controls">
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </div>
+            </li>
+            {{/each}}
+        </ol>
+        {{/each}}
+    </section>
+
+</form>

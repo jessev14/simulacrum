@@ -1,0 +1,18 @@
+<div class="simulacrum chat-card item-card skillTool" data-actor-id="{{actor._id}}" data-item-id="{{item._id}}">
+
+    <header class="card-header flexrow">
+        <img src="{{item.img}}" title="{{item.name}}" width="36" height="36" />
+        <h3 class="item-name">{{item.name}}</h3>
+    </header>
+
+    <div>
+        {{{item.system.description}}}
+    </div>
+
+    {{#if (eq item.type 'action')}}
+    <div class="chat-buttons">
+        <button data-action="roll">Roll</button>
+    </div>
+    {{/if}}
+
+</div>
