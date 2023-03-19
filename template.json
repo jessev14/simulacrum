@@ -10,7 +10,7 @@
             "templates": [
             ],
             "role": "",
-            "team": "blue",
+            "team": "red",
             "visible": true
         },
         "node": {
@@ -36,27 +36,38 @@
         "templates": {
             "common": {
                 "category": "",
-                "description": ""
+                "description": "",
+                "usableTeam": "all"
+            },
+            "base": {
+                "baseValue": "",
+                "bonuses": "",
+                "equipped": false,
+                "attributeBonuses": {
+                    "resilience": 0,
+                    "insight": 0,
+                    "control": 0
+                }
             }
         },
         "htmlFields": ["description"],
         "skill": {
             "templates": [
-                "common"
+                "common",
+                "base"
             ]
         },
         "tool": {
             "templates": [
-                "common"
-            ],
-            "effect": ""
+                "common",
+                "base"
+            ]
         },
         "action": {
             "templates": [
                 "common"
             ],
-            "baseDice": 1,
-            "targetStat": "resilience"
+            "successDie": 1
         }
     }
 }

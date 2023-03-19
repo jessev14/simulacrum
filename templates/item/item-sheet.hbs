@@ -4,6 +4,19 @@
         <h1><input name="name" type="text" value="{{item.name}}" placeholder="{{ localize 'Name' }}"/></h1>
     </header>
 
+    <div class="flexrow">
+        <label class="select-label">
+            Usable By
+            <select name="system.usableTeam">
+                {{#select item.system.usableTeam}}
+                <option value="all">All</option>
+                <option value="red">Red Team</option>
+                <option value="blue">Blue Team</option>
+                {{/select}}
+            </select>
+        </label>
+    </div>
+
     {{#if category}}
     <div class="flexrow">
         <label>
@@ -17,15 +30,8 @@
     <div class="flexrow">
 
         <label>
-            Base Success Die
+            Success Die
             <input name="system.baseDice" type="number" step="1" value="{{item.system.baseDice}}" />
-        </label>
-
-        <label class="select-label">
-            Target Stat
-            <select name="system.targetStat">
-                {{selectOptions targetStats selected=item.system.targetStat}}
-            </select>
         </label>
 
     </div>
