@@ -35,6 +35,26 @@
         </label>
 
     </div>
+    {{else}}
+    <div class="flexrow">
+
+        <label>
+            Base Value
+            <input name="system.baseValue" type="text" step="1" value="{{item.system.baseValue}}" placeholder="0"/>
+        </label>
+
+        <label>
+            Bonuses
+            <input name="system.bonuses" type="text" step="1" value="{{item.system.bonuses}}" placeholder="0"/>
+        </label>
+
+        <label>
+            Value
+            <input name="system.value" type="number" step="1" value="{{item.system.value}}" disabled />
+        </label>
+
+
+    </div>
     {{/if}}
 
     {{editor item.system.description target="system.description" button=true editable=true collaborate=false}}

@@ -108,6 +108,14 @@ class SimulacrumActorSheet extends ActorSheet {
 
 class SimulacrumItem extends Item {
 
+    prepareDerivedData() {
+        if (['skill', 'tool'].includes(this.type)) {
+            const { baseValue, bonuses } = this.system;
+            const value = Number(baseValue) + Number(bonuses);
+            if (!!value) this.system.value = value;
+        }
+    }
+
     async roll(options = {}) {
         if (this.type !== 'action' || !this.actor) return;
 
