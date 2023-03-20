@@ -59,6 +59,12 @@ label.select-label {
 
 .item-sheet div.editor {
     flex: 1;
+    overflow-y: scroll;
+    max-height: 100px;
+}
+
+.item-sheet .item-actions {
+    min-height: 100px;
 }
 
 

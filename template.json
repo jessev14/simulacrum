@@ -47,7 +47,8 @@
                     "resilience": 0,
                     "insight": 0,
                     "control": 0
-                }
+                },
+                "actions": []
             }
         },
         "htmlFields": ["description"],

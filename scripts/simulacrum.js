@@ -170,7 +170,8 @@ class SimulacrumItemSheet extends ItemSheet {
 
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
-            height: 400
+            height: 500,
+            dragDrop: [{dragSelector: null, dropSelector: null}]
         });
     }
 
@@ -178,7 +179,7 @@ class SimulacrumItemSheet extends ItemSheet {
         return `systems/${systemID}/templates/item/item-sheet.hbs`;
     }
 
-    getData() {
+    async getData() {
         const data = super.getData();
 
         data.category = this.item.type !== 'skill';
@@ -188,7 +189,41 @@ class SimulacrumItemSheet extends ItemSheet {
             sensitivity: 'Sensitivity'
         };
 
+        data.hasActions = this.item.system.actions;
+        data.actions = {};
+        for (const actionUuid of this.item.system.actions || []) {
+            const uuidData = fromUuidSync(actionUuid);
+            let item;
+            if (uuidData.pack) {
+                const pack = game.packs.get(uuidData.pack);
+                item = await pack.getDocument(uuidData._id);
+            } else item = uuidData;
+
+            data.actions[actionUuid] = item;
+        }
+
         return data;
+    }
+
+    async _onDrop(event) {
+        const data = TextEditor.getDragEventData(event);
+        lg({data})
+        if (!data.type === 'item') return;
+
+        const uuidData = fromUuidSync(data.uuid);
+        let item;
+        if (uuidData.pack) {
+            const pack = game.packs.get(uuidData.pack);
+            item = await pack.getDocument(uuidData._id);
+        } else item = uuidData;
+        if (!item || item.type !== 'action') return;
+
+        const actions = this.item.system.actions;
+        if (actions.includes(data.uuid)) return;
+
+        actions.push(data.uuid);
+
+        return this.item.update({'system.actions': actions});
     }
 
 }
