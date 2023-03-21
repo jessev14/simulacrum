@@ -58,14 +58,44 @@ label.select-label {
 }
 
 .item-sheet div.editor {
-    flex: 1;
+    flex: unset;
     overflow-y: scroll;
-    max-height: 100px;
+    
+    height: 200px;
 }
 
 .item-sheet .item-actions {
     min-height: 100px;
+    padding: 0;
 }
+
+.item-sheet .item-actions li.item-action {
+    border: 1px solid black;
+    margin: 2px 0px;
+    padding: 4px 8px;
+}
+
+.item-sheet .item-actions li.item-action div.item-name {
+    display: flex;
+    align-items: center;
+}
+
+.item-sheet .item-actions li.item-action div.item-name img {
+    margin-right: 4px;
+}
+
+.item-sheet .item-actions li.item-action div.item-name h4 {
+    margin: 0;
+}
+
+.item-sheet .item-actions li.item-action div.item-controls {
+    flex: 0 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
 
 
 

@@ -4,6 +4,10 @@
         <h1><input name="name" type="text" value="{{item.name}}" placeholder="{{ localize 'Name' }}"/></h1>
     </header>
 
+    {{#if hasParent}}
+
+    {{/if}}
+
     <div class="flexrow">
         <label class="select-label">
             Usable By
@@ -31,7 +35,7 @@
 
         <label>
             Success Die
-            <input name="system.baseDice" type="number" step="1" value="{{item.system.baseDice}}" />
+            <input name="system.successDie" type="number" step="1" value="{{item.system.successDie}}" />
         </label>
 
     </div>
@@ -64,13 +68,12 @@
     <h2>Actions</h2>
     <ol class="item-actions flexcol">
         {{#each actions as |action id|}}
-            <li class="item-action flexrow" data-item-id="{{action.id}}">
+            <li class="item-action flexrow" data-item-uuid="{{id}}">
                 <div class="item-name">
                     <img src="{{action.img}}" title="{{action.name}}" width="24" height="24" />
-                    <h4>{{action.name}}</h4>
+                    <a class="action-name"><h4>{{action.name}}</h4></a>
                 </div>
                 <div class="item-controls">
-                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                     <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                 </div>
             </li>

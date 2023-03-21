@@ -108,6 +108,15 @@ class SimulacrumActorSheet extends ActorSheet {
 
 class SimulacrumItem extends Item {
 
+    get parentItem() {
+        if (this.type !== 'action' || !this.actor) return null;
+
+        const otherItems = this.actor?.items.filter(i => i.id !== this.id);
+        otherItems.reduce((acc, current) => {
+            
+        });
+    }
+
     prepareDerivedData() {
         if (['skill', 'tool'].includes(this.type)) {
             const { baseValue, bonuses } = this.system;
@@ -189,20 +198,34 @@ class SimulacrumItemSheet extends ItemSheet {
             sensitivity: 'Sensitivity'
         };
 
-        data.hasActions = this.item.system.actions;
+        data.hasActions = foundry.utils.hasProperty(this.item.system, 'actions');
         data.actions = {};
         for (const actionUuid of this.item.system.actions || []) {
-            const uuidData = fromUuidSync(actionUuid);
-            let item;
-            if (uuidData.pack) {
-                const pack = game.packs.get(uuidData.pack);
-                item = await pack.getDocument(uuidData._id);
-            } else item = uuidData;
-
-            data.actions[actionUuid] = item;
+            const item = await getAction(actionUuid);
+            if (item) data.actions[actionUuid] = item;
         }
 
         return data;
+    }
+
+    activateListeners($html) {
+        const [html] = $html;
+
+        const actions = html.querySelectorAll('a.action-name');
+        for (const action of actions) {
+            action.addEventListener('click', async event => {
+                const { currentTarget } = event;
+                const li = currentTarget.closest('li.item-action');
+                const uuid = li.dataset.itemUuid;                
+                const item = await getAction(uuid);
+                if (!item?.sheet) return;
+
+                return item.sheet.render(true);
+            });
+        }
+
+
+        super.activateListeners($html);
     }
 
     async _onDrop(event) {
@@ -210,12 +233,7 @@ class SimulacrumItemSheet extends ItemSheet {
         lg({data})
         if (!data.type === 'item') return;
 
-        const uuidData = fromUuidSync(data.uuid);
-        let item;
-        if (uuidData.pack) {
-            const pack = game.packs.get(uuidData.pack);
-            item = await pack.getDocument(uuidData._id);
-        } else item = uuidData;
+        const item = await getAction(data.uuid);
         if (!item || item.type !== 'action') return;
 
         const actions = this.item.system.actions;
@@ -278,3 +296,15 @@ Hooks.on('renderChatLog', (app, [html], data) => {
         }
     });
 });
+
+
+async function getAction(uuid) {
+    const uuidData = fromUuidSync(uuid);
+    let item;
+    if (uuidData.pack) {
+        const pack = game.packs.get(uuidData.pack);
+        item = await pack.getDocument(uuidData._id);
+    } else item = uuidData;
+
+    return item;
+}
