@@ -44,8 +44,6 @@ class SimulacrumActorSheet extends ActorSheet {
     getData(options) {
         const data = super.getData(options);
 
-        lg({ data })
-
         const Skills = data.actor.items.filter(i => i.type === 'skill');
         const Tools = data.actor.items.filter(i => i.type === 'tool');
         const Actions = data.actor.items.filter(i => i.type === 'action');
@@ -77,7 +75,7 @@ class SimulacrumActorSheet extends ActorSheet {
         };
 
         if (this.actor.isOwner) {
-            for (const a of html.querySelectorAll('a.item-edit')) {
+            for (const a of html.querySelectorAll('a.item-name')) {
                 a.addEventListener('click', event => {
                     event.preventDefault();
 
@@ -108,9 +106,18 @@ class SimulacrumActorSheet extends ActorSheet {
 
 class SimulacrumItem extends Item {
 
-    get parentItem() {
-        if (this.type !== 'action' || !this.actor) return null;
+    get parentItems() {
+        if (this.type !== 'action') return null;
 
+        const parentItems = [];
+        for (const item of this.actor?.items || []) {
+            if (item.type === 'action') continue;
+
+            const childrenIDs = item.getFlag(systemID, 'children') || [];
+            if (childrenIDs.includes(this.id)) parentItems.push(item);
+        }
+
+        return parentItems.length? parentItems : null;
     }
 
     prepareDerivedData() {
@@ -124,8 +131,9 @@ class SimulacrumItem extends Item {
     async roll(options = {}) {
         if (this.type !== 'action' || !this.actor) return;
 
-        const { baseDice } = this.system;
-        const formula = `${baseDice}d6`;
+        const { successDie } = this.system;
+        const bonusDice = this.getFlag(systemID, 'bonusDice') || 0;
+        const formula = `${successDie + bonusDice}d6`;
 
         const r = new Roll(formula);
 
@@ -164,6 +172,8 @@ class SimulacrumItem extends Item {
 
     async _preCreate(data, options, user) {
         if (foundry.utils.hasProperty(this.system, 'equipped')) this.updateSource({'system.equipped': false});
+
+        return super._preCreate(data, options, user);
     }
 
     async _preUpdate(changed, options, user) {
@@ -173,11 +183,69 @@ class SimulacrumItem extends Item {
         return super._preUpdate(changed, options, user);
     }
 
-    _onCreate(data, options, userID) {
+    async _onUpdate(changed, options, userID) {
+        if (userID === game.user.id) {
+            if (changed.system?.equipped === true) await this.equipActions();
+            else if (changed.system?.equipped === false) await this.unequipActions();
+        }
 
+        return super._onUpdate(changed, options, userID);
+    }
+
+    _onDelete(options, userID) {
+        if (game.user.id === userID) {
+            if (this.actor && this.system.actions?.length) {
+                return this.unequipActions();
+            }
+        }
     }
 
 
+    async equipActions() {
+        const createData = [];
+        for (const actionUuid of this.system.actions) {
+            const item = await getAction(actionUuid);
+            if (!item) continue;
+
+            const prexistingAction = this.actor?.items.find(i => {
+                const flagUuid = i.getFlag(systemID, 'originalUuid');
+                return flagUuid;
+            })
+            if (prexistingAction) {
+                const bonusDice = prexistingAction.getFlag(systemID, 'bonusDice') || 0;
+                await prexistingAction.setFlag(systemID, 'bonusDice', bonusDice + 1);
+                const children = this.getFlag(systemID, 'children') || [];
+                children.push(prexistingAction.id);
+                await this.setFlag(systemID, 'children', children);
+            } else {
+                const itemData = { ...item };
+                if (!itemData.flags[systemID]) itemData.flags[systemID] = {};
+                itemData.flags[systemID].originalUuid = item.uuid;
+                createData.push(itemData);
+            }
+        }
+
+        if (createData.length) {
+            const children = await this.actor.createEmbeddedDocuments('Item', createData);
+            return this.setFlag(systemID, 'children', children.map(c => c.id));
+        }
+    }
+
+    async unequipActions() {
+        const deleteIDs = [];
+        const actionItems = this.getFlag(systemID, 'children')?.map(id => this.actor?.items.get(id));
+        for (const actionItem of actionItems) {
+            if (!actionItem) continue;
+
+            const bonusDice = actionItem.getFlag(systemID, 'bonusDice') || 0;
+            if (bonusDice > 0) {
+                await actionItem.setFlag(systemID, 'bonusDice', bonusDice - 1);
+            } else deleteIDs.push(actionItem.id);
+        }
+
+        if (deleteIDs.length) return this.actor.deleteEmbeddedDocuments('Item', deleteIDs);
+    }
+ 
 
 }
 
@@ -194,10 +262,14 @@ class SimulacrumItemSheet extends ItemSheet {
         return `systems/${systemID}/templates/item/item-sheet.hbs`;
     }
 
+    get isEditable() {
+        return this.item.parentItems?.length ? false : super.isEditable;
+    }
+
     async getData() {
         const data = super.getData();
 
-        data.notAction = this.type !== 'action';
+        data.notAction = this.item.type !== 'action';
 
         data.category = this.item.type !== 'skill';
         data.targetStats = {
@@ -212,6 +284,11 @@ class SimulacrumItemSheet extends ItemSheet {
             if (item) data.actions[actionUuid] = item;
         }
 
+        data.hasParentItems = this.item.parentItems?.length > 0;
+        data.parentItems = this.item.parentItems?.filter(i => i.system.equipped);
+        data.bonusDice = this.item.getFlag(systemID, 'bonusDice');
+
+        lg({data})
         return data;
     }
 
@@ -231,13 +308,21 @@ class SimulacrumItemSheet extends ItemSheet {
             });
         }
 
+        const parentName = html.querySelector('a.parent-item-name');
+        if (parentName) {
+            parentName.addEventListener('click', () => {
+                const parentItemID = parentName.dataset.itemId;
+                const parentItem = this.actor?.items.get(parentItemID);
+                return parentItem?.sheet.render(true);
+            });
+        }
+
 
         super.activateListeners($html);
     }
 
     async _onDrop(event) {
         const data = TextEditor.getDragEventData(event);
-        lg({data})
         if (!data.type === 'item') return;
 
         const item = await getAction(data.uuid);

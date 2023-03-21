@@ -1,9 +1,12 @@
+{{log 'item template log'}}
+{{log this}}
 <form class="item-sheet" autocomplete="off">
     <header class="sheet-header">
         <img src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
         <h1><input name="name" type="text" value="{{item.name}}" placeholder="{{ localize 'Name' }}"/></h1>
     </header>
 
+    
     {{#if notAction}}
         <div class="flexrow">
         <label class="equipped-label">
@@ -11,7 +14,16 @@
             <input type="checkbox" name="system.equipped" {{checked item.system.equipped}} />
         </label>
     </div>
- 
+    {{/if}}
+
+    {{#if hasParentItems}}
+    <div class="parent-item-label">
+        <label>
+        From:
+        {{#each parentItems as |item|}}
+        <a class="parent-item-name" data-item-id="{{item.id}}"><b>{{item.name}}</b></a>
+        {{/each}}
+    </div>
     {{/if}}
 
     <div class="flexrow">
@@ -40,7 +52,7 @@
     <div class="flexrow">
 
         <label>
-            Success Die
+            Success Die{{#if bonusDice}} (+{{bonusDice}}){{/if}}
             <input name="system.successDie" type="number" step="1" value="{{item.system.successDie}}" />
         </label>
 

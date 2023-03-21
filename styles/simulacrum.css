@@ -113,3 +113,8 @@ label.select-label {
     flex: 0 0 36px;
     margin-right: 5px;
 }
+
+a.disabled {
+    pointer-events: none;
+    color: grey;
+}
