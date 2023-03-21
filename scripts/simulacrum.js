@@ -162,12 +162,22 @@ class SimulacrumItem extends Item {
         return ChatMessage.create(chatData);
     }
 
+    async _preCreate(data, options, user) {
+        if (foundry.utils.hasProperty(this.system, 'equipped')) this.updateSource({'system.equipped': false});
+    }
+
     async _preUpdate(changed, options, user) {
         if (foundry.utils.hasProperty(changed, 'system.baseDice')) {
             changed.system.baseDice = parseInt(changed.system.baseDice);
         }
         return super._preUpdate(changed, options, user);
     }
+
+    _onCreate(data, options, userID) {
+
+    }
+
+
 
 }
 
