@@ -57,6 +57,11 @@ label.select-label {
     flex-direction: column;
 }
 
+.item-sheet label.equipped-label {
+    display: flex;
+    align-items: center;
+}
+
 .item-sheet div.editor {
     flex: unset;
     overflow-y: scroll;

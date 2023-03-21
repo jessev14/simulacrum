@@ -4,8 +4,14 @@
         <h1><input name="name" type="text" value="{{item.name}}" placeholder="{{ localize 'Name' }}"/></h1>
     </header>
 
-    {{#if hasParent}}
-
+    {{#if notAction}}
+        <div class="flexrow">
+        <label class="equipped-label">
+            Equipped
+            <input type="checkbox" name="system.equipped" {{checked item.system.equipped}} />
+        </label>
+    </div>
+ 
     {{/if}}
 
     <div class="flexrow">
@@ -64,7 +70,7 @@
     <h2>Description</h2>
     {{editor item.system.description target="system.description" button=true editable=true collaborate=false}}
 
-    {{#if hasActions}}
+    {{#if notAction}}
     <h2>Actions</h2>
     <ol class="item-actions flexcol">
         {{#each actions as |action id|}}

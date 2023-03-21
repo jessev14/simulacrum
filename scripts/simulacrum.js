@@ -111,10 +111,6 @@ class SimulacrumItem extends Item {
     get parentItem() {
         if (this.type !== 'action' || !this.actor) return null;
 
-        const otherItems = this.actor?.items.filter(i => i.id !== this.id);
-        otherItems.reduce((acc, current) => {
-            
-        });
     }
 
     prepareDerivedData() {
@@ -191,6 +187,8 @@ class SimulacrumItemSheet extends ItemSheet {
     async getData() {
         const data = super.getData();
 
+        data.notAction = this.type !== 'action';
+
         data.category = this.item.type !== 'skill';
         data.targetStats = {
             resilience: 'Resilience',
@@ -198,7 +196,6 @@ class SimulacrumItemSheet extends ItemSheet {
             sensitivity: 'Sensitivity'
         };
 
-        data.hasActions = foundry.utils.hasProperty(this.item.system, 'actions');
         data.actions = {};
         for (const actionUuid of this.item.system.actions || []) {
             const item = await getAction(actionUuid);
