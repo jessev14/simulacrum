@@ -1,3 +1,4 @@
+{{log this}}
 <form class="item-sheet" autocomplete="off">
     <header class="sheet-header">
         <img src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
@@ -51,7 +52,7 @@
 
         <label>
             Success Die{{#if bonusDice}} (+{{bonusDice}}){{/if}}
-            <input name="system.successDie" type="number" step="1" value="{{item.system.successDie}}" />
+            <input type="number" step="1" value="{{successDie}}" />
         </label>
 
     </div>
@@ -60,17 +61,17 @@
 
         <label>
             Base Value
-            <input name="system.baseValue" type="text" step="1" value="{{item.system.baseValue}}" placeholder="0"/>
+            <input name="system.baseValue" type="number" step="1" value="{{item.system.baseValue}}" placeholder="0"/>
         </label>
 
         <label>
-            Bonuses
-            <input name="system.bonuses" type="text" step="1" value="{{item.system.bonuses}}" placeholder="0"/>
+            Expertise
+            <input name="system.expertise" type="number" step="1" value="{{item.system.expertise}}" placeholder="0"/>
         </label>
 
         <label>
             Value
-            <input name="system.value" type="number" step="1" value="{{item.system.value}}" disabled />
+            <input type="number" step="1" value="{{totalValue}}" disabled />
         </label>
 
 

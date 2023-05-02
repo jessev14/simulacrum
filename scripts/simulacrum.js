@@ -120,6 +120,22 @@ class SimulacrumItem extends Item {
         return parentItems.length? parentItems : null;
     }
 
+    get value() {
+        if (this.type !== 'skill') return null;
+
+        return (parseInt(this.system.baseValue) || 0) + (parseInt(this.system.expertise) || 0);
+    }
+
+    get successDie() {
+        if (this.type === 'skill') return null;
+
+        const successDie = this.parentItems.reduce((acc, c) => {
+            return Math.max(c.value, acc);
+        }, 1);
+
+        return successDie;
+    }
+
     prepareDerivedData() {
         if (['skill', 'tool'].includes(this.type)) {
             const { baseValue, bonuses } = this.system;
@@ -131,9 +147,8 @@ class SimulacrumItem extends Item {
     async roll(options = {}) {
         if (this.type !== 'action' || !this.actor) return;
 
-        const { successDie } = this.system;
         const bonusDice = this.getFlag(systemID, 'bonusDice') || 0;
-        const formula = `${successDie + bonusDice}d6`;
+        const formula = `${this.successDie + bonusDice}d6`;
 
         const r = new Roll(formula);
 
@@ -292,6 +307,8 @@ class SimulacrumItemSheet extends ItemSheet {
 
         data.hasParentItems = this.item.parentItems?.length > 0;
         data.parentItems = this.item.parentItems?.filter(i => i.system.equipped);
+        data.totalValue = this.item.value;
+        data.successDie = this.item.successDie;
         data.bonusDice = this.item.getFlag(systemID, 'bonusDice');
 
         lg({data})

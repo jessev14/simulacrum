@@ -40,7 +40,7 @@
                 "usableTeam": "all"
             },
             "base": {
-                "baseValue": "",
+                "baseValue": 1,
                 "bonuses": "",
                 "equipped": false,
                 "attributeBonuses": {
@@ -56,7 +56,8 @@
             "templates": [
                 "common",
                 "base"
-            ]
+            ],
+            "expertise": 1
         },
         "tool": {
             "templates": [
@@ -67,8 +68,7 @@
         "action": {
             "templates": [
                 "common"
-            ],
-            "successDie": 1
+            ]
         }
     }
 }
