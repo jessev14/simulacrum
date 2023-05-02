@@ -118,3 +118,8 @@ a.disabled {
     pointer-events: none;
     color: grey;
 }
+
+.dice-tooltip {
+    display: block !important;
+    pointer-events: none;
+}
