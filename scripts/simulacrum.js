@@ -129,7 +129,7 @@ class SimulacrumItem extends Item {
     get successDie() {
         if (this.type === 'skill') return null;
 
-        const successDie = this.parentItems.reduce((acc, c) => {
+        const successDie = this.parentItems?.reduce((acc, c) => {
             return Math.max(c.value, acc);
         }, 1);
 
