@@ -202,6 +202,7 @@ class SimulacrumItem extends Item {
 
 
     async equipActions() {
+        debugger
         const createData = [];
         for (const actionUuid of this.system.actions) {
             const item = await getAction(actionUuid);
@@ -209,7 +210,7 @@ class SimulacrumItem extends Item {
 
             const prexistingAction = this.actor?.items.find(i => {
                 const flagUuid = i.getFlag(systemID, 'originalUuid');
-                return flagUuid;
+                return flagUuid === item.uuid;
             })
             if (prexistingAction) {
                 const bonusDice = prexistingAction.getFlag(systemID, 'bonusDice') || 0;
