@@ -19,7 +19,7 @@
         <label>
         From:
         {{#each parentItems as |item|}}
-        <a class="parent-item-name" data-item-id="{{item.id}}"><b>{{item.name}}</b></a>
+        <a class="parent-item-name" data-item-id="{{item.id}}"><b>{{item.name}}{{#unless @last}},{{/unless}}</b></a>
         {{/each}}
     </div>
     {{/if}}

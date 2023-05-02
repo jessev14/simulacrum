@@ -211,13 +211,14 @@ class SimulacrumItem extends Item {
             const prexistingAction = this.actor?.items.find(i => {
                 const flagUuid = i.getFlag(systemID, 'originalUuid');
                 return flagUuid === item.uuid;
-            })
+            });
             if (prexistingAction) {
                 const bonusDice = prexistingAction.getFlag(systemID, 'bonusDice') || 0;
                 await prexistingAction.setFlag(systemID, 'bonusDice', bonusDice + 1);
                 const children = this.getFlag(systemID, 'children') || [];
                 children.push(prexistingAction.id);
-                await this.setFlag(systemID, 'children', children);
+                await this.setFlag(systemID, 'children', children); // this is not sticking;
+                console.log(this.getFlag(systemID, 'children'))
             } else {
                 const itemData = { ...item };
                 if (!itemData.flags[systemID]) itemData.flags[systemID] = {};
@@ -228,13 +229,19 @@ class SimulacrumItem extends Item {
 
         if (createData.length) {
             const children = await this.actor.createEmbeddedDocuments('Item', createData);
-            return this.setFlag(systemID, 'children', children.map(c => c.id));
+            const childrenFlag = this.getFlag(systemID, 'children') || [];
+            childrenFlag.push(...children.map(c => c.id));
+            console.log(childrenFlag)
+            return this.setFlag(systemID, 'children', childrenFlag);
         }
     }
 
     async unequipActions() {
+        debugger
         const deleteIDs = [];
         const actionItems = this.getFlag(systemID, 'children')?.map(id => this.actor?.items.get(id));
+        if (!actionItems) return;
+
         for (const actionItem of actionItems) {
             if (!actionItem) continue;
 
@@ -309,15 +316,14 @@ class SimulacrumItemSheet extends ItemSheet {
             });
         }
 
-        const parentName = html.querySelector('a.parent-item-name');
-        if (parentName) {
+        const parentNames = html.querySelectorAll('a.parent-item-name');
+        for (const parentName of parentNames) {
             parentName.addEventListener('click', () => {
                 const parentItemID = parentName.dataset.itemId;
                 const parentItem = this.actor?.items.get(parentItemID);
                 return parentItem?.sheet.render(true);
             });
         }
-
 
         super.activateListeners($html);
     }
