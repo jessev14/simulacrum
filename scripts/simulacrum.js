@@ -202,7 +202,6 @@ class SimulacrumItem extends Item {
 
 
     async equipActions() {
-        debugger
         const createData = [];
         for (const actionUuid of this.system.actions) {
             const item = await getAction(actionUuid);
@@ -237,7 +236,6 @@ class SimulacrumItem extends Item {
     }
 
     async unequipActions() {
-        debugger
         const deleteIDs = [];
         const actionItems = this.getFlag(systemID, 'children')?.map(id => this.actor?.items.get(id));
         if (!actionItems) return;
