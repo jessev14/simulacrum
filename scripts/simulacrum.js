@@ -133,8 +133,7 @@ class SimulacrumItem extends Item {
 
         const { successDie } = this.system;
         const bonusDice = this.getFlag(systemID, 'bonusDice') || 0;
-        const expertise = parseInt(this.actor.system.expertise) || 0;
-        const formula = `${successDie + bonusDice + expertise}d6`;
+        const formula = `${successDie + bonusDice}d6`;
 
         const r = new Roll(formula);
 

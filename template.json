@@ -11,8 +11,7 @@
             ],
             "role": "",
             "team": "red",
-            "visible": true,
-            "expertise": 0
+            "visible": true
         },
         "node": {
             "templates": [
