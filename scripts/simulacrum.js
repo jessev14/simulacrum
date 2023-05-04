@@ -28,7 +28,7 @@ class SimulacrumActor extends Actor {
 
     async _preUpdate(changed, options, user) {
         if (foundry.utils.hasProperty(changed, 'system.attributes.control')) {
-            changed.system.attributes.control = Math.clamped(change.system.attributes.control, 0, 10);
+            changed.system.attributes.control = Math.clamped(changed.system.attributes.control, 0, 10);
         }
         return super._preUpdate(changed, options, user);
     }
