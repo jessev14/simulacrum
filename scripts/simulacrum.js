@@ -74,6 +74,19 @@ class SimulacrumActorSheet extends ActorSheet {
             });
         };
 
+        for (const a of html.querySelectorAll('a.item-equip')) {
+            a.addEventListener('click', event => {
+                event.preventDefault();
+
+                const li = event.currentTarget.closest('li.actor-item');
+                const item = this.actor.items.get(li.dataset.itemId);
+                if (!item) return;
+
+                const newEquipState = !item.system.equipped;
+                return item.update({ 'system.equipped': newEquipState });
+            });
+        }
+
         if (this.actor.isOwner) {
             for (const a of html.querySelectorAll('a.item-name')) {
                 a.addEventListener('click', event => {
@@ -217,6 +230,8 @@ class SimulacrumItem extends Item {
 
 
     async equipActions() {
+        if (!this.actor) return this.update({ 'system.equipped': false });
+
         const createData = [];
         for (const actionUuid of this.system.actions) {
             const item = await getAction(actionUuid);
@@ -231,8 +246,7 @@ class SimulacrumItem extends Item {
                 await prexistingAction.setFlag(systemID, 'bonusDice', bonusDice + 1);
                 const children = this.getFlag(systemID, 'children') || [];
                 children.push(prexistingAction.id);
-                await this.setFlag(systemID, 'children', children); // this is not sticking;
-                console.log(this.getFlag(systemID, 'children'))
+                await this.setFlag(systemID, 'children', children); // this is not sticking; TODO: this is creating huge children arrays
             } else {
                 const itemData = { ...item };
                 if (!itemData.flags[systemID]) itemData.flags[systemID] = {};
@@ -245,7 +259,6 @@ class SimulacrumItem extends Item {
             const children = await this.actor.createEmbeddedDocuments('Item', createData);
             const childrenFlag = this.getFlag(systemID, 'children') || [];
             childrenFlag.push(...children.map(c => c.id));
-            console.log(childrenFlag)
             return this.setFlag(systemID, 'children', childrenFlag);
         }
     }
@@ -264,7 +277,8 @@ class SimulacrumItem extends Item {
             } else deleteIDs.push(actionItem.id);
         }
 
-        if (deleteIDs.length) return this.actor.deleteEmbeddedDocuments('Item', deleteIDs);
+        if (deleteIDs.length) await this.actor.deleteEmbeddedDocuments('Item', deleteIDs);
+        return this.unsetFlag(systemID, 'children');
     }
  
 
@@ -330,6 +344,21 @@ class SimulacrumItemSheet extends ItemSheet {
                 return item.sheet.render(true);
             });
         }
+
+        html.querySelectorAll('a.item-control').forEach(a => {
+            a.addEventListener('click', ev => {
+                if (ev.currentTarget.classList.contains('item-delete') && this.item.type === 'skill') {
+                    if (this.item.system.equipped) return ui.notifications.warn('Unequip skill first.');
+
+                    const li = ev.currentTarget.closest('li.item-action');
+                    const uuid = li.dataset.itemUuid;
+                    const { actions } = this.item.system;
+                    actions.splice(actions.indexOf(uuid), 1);
+
+                    return this.item.update({ 'system.actions': actions });
+                }
+            });
+        });
 
         const parentNames = html.querySelectorAll('a.parent-item-name');
         for (const parentName of parentNames) {
