@@ -246,7 +246,7 @@ class SimulacrumItem extends Item {
                 await prexistingAction.setFlag(systemID, 'bonusDice', bonusDice + 1);
                 const children = this.getFlag(systemID, 'children') || [];
                 children.push(prexistingAction.id);
-                await this.setFlag(systemID, 'children', children); // this is not sticking; TODO: this is creating huge children arrays
+                await this.setFlag(systemID, 'children', children);
             } else {
                 const itemData = { ...item };
                 if (!itemData.flags[systemID]) itemData.flags[systemID] = {};
